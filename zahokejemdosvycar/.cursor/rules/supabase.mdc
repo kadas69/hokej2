@@ -1,0 +1,61 @@
+---
+description: Supabase integration rules — database, auth, SSR client setup
+globs: src/lib/supabase/**/*,src/app/api/**/*,supabase/**/*
+alwaysApply: false
+---
+
+# Supabase Rules
+
+## Client Setup (CRITICAL)
+- Use @supabase/ssr package, NEVER @supabase/auth-helpers-nextjs
+- Browser client: createBrowserClient from @supabase/ssr
+- Server client: createServerClient from @supabase/ssr with getAll/setAll cookies
+- NEVER use get(), set(), or remove() for cookies
+
+## Browser Client (src/lib/supabase/client.ts)
+```typescript
+import { createBrowserClient } from '@supabase/ssr'
+
+export function createClient() {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
+```
+
+## Server Client (src/lib/supabase/server.ts)
+```typescript
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+
+export async function createClient() {
+  const cookieStore = await cookies()
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll() },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options)
+          )
+        },
+      },
+    }
+  )
+}
+```
+
+## API Routes
+- Use service role key for admin operations only
+- Always validate input before database operations
+- Return consistent error format: { error: string, status: number }
+- Use Supabase RLS — don't rely solely on API-level auth
+
+## Database
+- All tables have RLS enabled
+- Use gen_random_uuid() for primary keys
+- Use TIMESTAMPTZ for all timestamps
+- Indexes on: registrations.email, codes.code, seats.seat_label

@@ -1,0 +1,29 @@
+import { HeroSection } from '@/components/HeroSection'
+import { RegistrationForm } from '@/components/RegistrationForm'
+import { LogoBar } from '@/components/LogoBar'
+import { Footer } from '@/components/Footer'
+import { PageBackground } from '@/components/PageBackground'
+import { PrizesSection } from '@/components/PrizesSection'
+import { HowItWorksSection } from '@/components/HowItWorksSection'
+import { PhotoBreak } from '@/components/StadiumSection'
+
+export default function HomePage() {
+  return (
+    <>
+      <PageBackground />
+      <main>
+        <HeroSection />
+        <HowItWorksSection />
+        <PrizesSection />
+        <PhotoBreak
+          src="/images/stadion_venku.png"
+          alt="Hokejový stadion ve švýcarských horách"
+          heading="Zažijte hokej ve Švýcarsku"
+          subtitle="MS v hokeji 2026 — Curych · Bern · Fribourg"
+        />
+        <RegistrationForm />
+      </main>
+      <Footer />
+    </>
+  )
+}

@@ -1,0 +1,60 @@
+---
+description: UI component guidelines — seat map, forms, animations
+globs: src/components/**/*
+alwaysApply: false
+---
+
+# Component Rules
+
+## General
+- All components are functional with TypeScript props interface
+- Use shadcn/ui for form elements (Input, Button, Checkbox, Select)
+- Use Framer Motion for animations (motion.div, AnimatePresence)
+- Tailwind for all styling, no CSS modules or styled-components
+
+## SeatMap Component
+- 10 rows × 4 seats (A, B | aisle | C, D)
+- SVG or div grid layout — choose simpler option
+- States: free (gray), occupied (dark + icon), selected (gold glow)
+- Occupied seats are NOT clickable
+- On click: Framer Motion animation → navigate to /vyhra with prize data
+- Fetch seat occupancy status from /api/seats on mount
+- Show loading skeleton while fetching
+
+## RegistrationForm Component
+- Client component ('use client')
+- Use react-hook-form or native form with useState
+- Inline validation with Czech error messages
+- Fields: jméno, příjmení, email, telefon, datum narození, soutěžní otázka, 2× checkbox
+- Phone: accept +420 format, validate pattern
+- Date: must be 18+ (calculate from today)
+- On submit: POST to /api/register, show success/error state
+- Disable submit button during loading
+
+## PrizeReveal Component
+- Full-screen modal or new page (/vyhra)
+- Framer Motion entrance animation
+- Prize type determines: icon, color, text, animation intensity
+- Main prize (trip): gold + confetti effect
+- Other prizes: matching color animation
+- CTA after reveal: "Sdílet" or "Zpět na hlavní stránku"
+
+## HeroSection Component
+- Full viewport height on desktop, auto on mobile
+- Light background (#E8ECF0) with decorative cloud/mountain SVG elements
+- Hero plane image prominently displayed (not as dark overlay background)
+- Centered claim text (dark #1A1A2E) + red CTA button (#C8102E)
+- Smooth scroll to registration form on CTA click
+- Logo bar below or overlaid
+- Overall feel: clean, illustrative, airy — like a travel poster
+
+## Error Messages (Czech)
+- "Vyplňte prosím všechna povinná pole"
+- "Zadejte platnou e-mailovou adresu"
+- "Tento e-mail je již registrován"
+- "Nesprávná odpověď, zkuste to znovu"
+- "Zadejte platné telefonní číslo ve formátu +420..."
+- "Musíte být starší 18 let"
+- "Neplatný kód"
+- "Tento kód již byl použit"
+- "Toto sedadlo je již obsazené"

@@ -1,0 +1,55 @@
+---
+description: Core project rules for zahokejemdosvycar.cz contest microsite
+globs:
+alwaysApply: true
+---
+
+# Project: zahokejemdosvycar.cz
+
+## Stack
+- Next.js 14+ (App Router, TypeScript)
+- Tailwind CSS + shadcn/ui
+- Supabase (PostgreSQL, @supabase/ssr)
+- Framer Motion for animations
+- Lucide React for icons
+
+## Architecture Rules
+- Use App Router (src/app/) with server components by default
+- Minimize 'use client' — only for interactive components (forms, seat map, animations)
+- Use server actions or API routes for data mutations
+- All Supabase client creation via @supabase/ssr (NEVER use auth-helpers-nextjs)
+- Use getAll/setAll for cookies (NEVER get/set/remove)
+
+## Code Style
+- TypeScript strict mode
+- Functional components only, no classes
+- Use early returns for error handling
+- Czech language for all UI text, English for code (variable names, comments)
+- File naming: kebab-case for files, PascalCase for components
+
+## Design System
+- Colors: primary #C8102E (Kaufland red), secondary #003DA5 (hockey blue), accent #FFD700 (gold), bg #E8ECF0 (light gray) to #FFFFFF (white), text-primary #1A1A2E (dark), text-secondary #6B7280 (gray)
+- Visual style: clean, illustrative, airy — light backgrounds, decorative clouds/mountains as SVG/CSS, flat/semi-flat design
+- NO dark/techy look — inspired by the hero plane illustration (light gray sky, white clouds, Swiss mountains)
+- Mobile first responsive design
+- Min touch target 44x44px
+- Font size min 16px for body
+
+## Critical Business Logic
+- Prize is determined by CODE, not by seat selection
+- Seat selection is purely visual/UX
+- One email = one registration (unique constraint)
+- Only correct answers to the quiz question proceed to registration
+- Codes are pre-generated with assigned prize types
+
+## Performance
+- Target < 3s load on 4G
+- Optimize images with next/image
+- Use dynamic imports for heavy components (SeatMap)
+- Lazy load below-fold content
+
+## Don'ts
+- Don't over-engineer — this is a campaign microsite with limited lifespan
+- Don't add unnecessary dependencies
+- Don't create README or documentation unless asked
+- Don't modify files unrelated to the current task
