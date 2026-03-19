@@ -7,7 +7,7 @@ import { SeatMap } from '@/components/SeatMap'
 import { Footer } from '@/components/Footer'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Plane } from 'lucide-react'
+import { Plane, ArrowLeft } from 'lucide-react'
 
 function LetadloContent() {
   const searchParams = useSearchParams()
@@ -27,7 +27,7 @@ function LetadloContent() {
       {/* Background: zada.png with dark overlay */}
       <div className="fixed inset-0 -z-10">
         <Image
-          src="/images/zada.png"
+          src="/images/stad_nove.png"
           alt=""
           fill
           className="object-cover object-center"
@@ -38,15 +38,43 @@ function LetadloContent() {
       </div>
 
       <main className="min-h-screen">
-        <header className="relative z-10 bg-[#010D5D]/80 backdrop-blur-md border-b border-white/10 px-6 py-4">
-          <div className="max-w-5xl mx-auto flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 text-white font-bold text-lg">
-              <Plane className="w-5 h-5 text-[#D10A10]" />
-              Za hokejem do Švýcar
-            </Link>
-            <Link href="/" className="text-sm text-white/70 hover:text-white transition-colors">
-              Zpět na hlavní stránku
-            </Link>
+        <header className="relative z-10 bg-[#010D5D]/80 backdrop-blur-md border-b border-white/10 px-4 sm:px-6 py-4">
+          <div className="max-w-5xl mx-auto">
+            {/* Main header row */}
+            <div className="flex items-center justify-between">
+              {/* Left — CNN Prima NEWS logo */}
+              <div className="flex-1 flex items-center justify-start">
+                <Link href="/" className="inline-flex items-center gap-1.5 text-white/40 hover:text-white/60 transition-colors group">
+                  <ArrowLeft className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity -mr-1 group-hover:mr-0" />
+                  <Image
+                    src="/images/logos/logo-cnn-prima.png"
+                    alt="CNN Prima NEWS"
+                    width={88}
+                    height={30}
+                    className="object-contain"
+                  />
+                </Link>
+              </div>
+
+              {/* Center — Title */}
+              <div className="flex items-center gap-2.5 px-6">
+                <Plane className="w-5 h-5 text-[#D10A10] shrink-0" />
+                <span className="text-white font-bold text-lg whitespace-nowrap">
+                  Za hokejem do Švýcar
+                </span>
+              </div>
+
+              {/* Right — Kaufland logo */}
+              <div className="flex-1 flex items-center justify-end">
+                <Image
+                  src="/images/logos/logo-kaufland-nove.jpg"
+                  alt="Kaufland"
+                  width={36}
+                  height={36}
+                  className="object-contain"
+                />
+              </div>
+            </div>
           </div>
         </header>
 

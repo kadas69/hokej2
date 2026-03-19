@@ -22,10 +22,23 @@ export default function AdminPage() {
   const [authed, setAuthed] = useState(false)
   const [authError, setAuthError] = useState('')
 
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
-    setAuthed(true)
     setAuthError('')
+    try {
+      const res = await fetch('/api/admin/questions', {
+        headers: {
+          Authorization: `Basic ${btoa(`admin:${password}`)}`,
+        },
+      })
+      if (res.status === 401) {
+        setAuthError('Nesprávné heslo.')
+        return
+      }
+      setAuthed(true)
+    } catch {
+      setAuthError('Chyba připojení.')
+    }
   }
 
   if (!authed) {
@@ -64,12 +77,11 @@ export default function AdminPage() {
 function AdminDashboard({ password, onAuthError }: { password: string; onAuthError: () => void }) {
   const [tab, setTab] = useState<'questions' | 'codes' | 'registrations'>('questions')
 
-  const authHeaders = {
-    Authorization: `Basic ${btoa(`admin:${password}`)}`,
-    'Content-Type': 'application/json',
-  }
-
-  async function authedFetch(url: string, options?: RequestInit) {
+  const authedFetch = useCallback(async (url: string, options?: RequestInit) => {
+    const authHeaders = {
+      Authorization: `Basic ${btoa(`admin:${password}`)}`,
+      'Content-Type': 'application/json',
+    }
     const res = await fetch(url, {
       ...options,
       headers: { ...authHeaders, ...options?.headers },
@@ -79,7 +91,7 @@ function AdminDashboard({ password, onAuthError }: { password: string; onAuthErr
       throw new Error('Unauthorized')
     }
     return res
-  }
+  }, [password, onAuthError])
 
   const tabs = [
     { id: 'questions' as const, label: 'Otázky' },
@@ -466,8 +478,9 @@ function RegistrationsTab({ authedFetch }: { authedFetch: AuthedFetch }) {
       new Date(r.created_at).toLocaleString('cs-CZ'),
     ])
 
-    const csv = [headers, ...rows].map((row) => row.join(',')).join('\n')
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const escapeCSV = (v: string) => `"${String(v).replace(/"/g, '""')}"`
+    const csv = [headers, ...rows].map((row) => row.map(escapeCSV).join(',')).join('\n')
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url

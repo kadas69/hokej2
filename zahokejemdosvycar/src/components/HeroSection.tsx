@@ -15,7 +15,7 @@ export function HeroSection() {
       {/* Full-width hero image */}
       <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] min-h-[300px] max-h-[700px]">
         <Image
-          src="/images/letadlo.png"
+          src="/images/letadlonove2.jpg"
           alt="CNN Prima NEWS letadlo — Za hokejem do Švýcar"
           fill
           priority
@@ -32,14 +32,24 @@ export function HeroSection() {
           <div className="max-w-xl lg:max-w-2xl mx-auto text-center lg:text-left lg:mx-0">
 
             {/* Partner line */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
-              className="text-white/40 text-xs uppercase tracking-[0.3em] font-semibold mb-6"
-            >
-              Pořadatelem soutěže je CNN Prima NEWS
-            </motion.p>
+            <div className="mb-6">
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+                className="text-white/40 text-xs uppercase tracking-[0.3em] font-semibold"
+              >
+                Pořadatelem soutěže je CNN Prima NEWS
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 0.15 }}
+                className="text-white/35 text-xs uppercase tracking-[0.3em] font-semibold mt-1"
+              >
+                Hrdým partnerem soutěže je <span className="text-[#FF4D4D] font-bold">Kaufland</span>
+              </motion.p>
+            </div>
 
             {/* Main headline */}
             <motion.h1
@@ -59,7 +69,7 @@ export function HeroSection() {
               transition={{ duration: 0.6, delay: 0.25 }}
               className="text-lg md:text-xl text-white/60 max-w-sm mb-10 leading-relaxed mx-auto lg:mx-0"
             >
-              Zaregistrujte se, získejte kód a zažijte naživo atraktivní hokejový souboj Česka se Slovenskem na mistrovství světa!
+              Zaregistrujte se, získejte kód a zažijte naživo atraktivní hokejový souboj Česka se Slovenskem!
             </motion.p>
 
             <motion.div

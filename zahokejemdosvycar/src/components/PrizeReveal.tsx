@@ -244,7 +244,7 @@ export function PrizeReveal({ prizeType, seatLabel, referralCode }: PrizeRevealP
               {isNoPrize
                 ? 'Pošlete odkaz kamarádovi. Třeba bude mít štěstí právě on.'
                 : isMainPrize
-                ? 'Vyhráli jste zájezd na MS v hokeji do Švýcarska! Budeme vás kontaktovat e-mailem.'
+                ? 'Vyhráli jste zájezd na hokej do Švýcarska! Budeme vás kontaktovat e-mailem.'
                 : 'Vaše výhra vám bude zaslána na e-mail, který jste uvedli při registraci.'}
             </motion.p>
 

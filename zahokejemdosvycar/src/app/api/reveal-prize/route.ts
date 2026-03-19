@@ -3,7 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 
 export async function POST(request: Request) {
   try {
-    const { codeId } = await request.json()
+    const { codeId, seatLabel } = await request.json()
 
     if (!codeId) {
       return NextResponse.json(
@@ -12,54 +12,69 @@ export async function POST(request: Request) {
       )
     }
 
-    const { data: code, error: codeError } = await supabaseAdmin
+    if (!seatLabel || typeof seatLabel !== 'string') {
+      return NextResponse.json(
+        { error: 'Chybí sedadlo.' },
+        { status: 400 }
+      )
+    }
+
+    // Atomic update: only mark as used if not already used
+    const { data: updatedCode, error: updateError } = await supabaseAdmin
       .from('codes')
-      .select('id, prize_type, is_used, registration_id')
+      .update({
+        is_used: true,
+        seat_number: seatLabel,
+        used_at: new Date().toISOString(),
+      })
       .eq('id', codeId)
+      .eq('is_used', false)
+      .select('id, prize_type, registration_id')
       .single()
 
-    if (codeError || !code) {
+    if (updateError || !updatedCode) {
+      // Either code doesn't exist or was already used
+      const { data: existingCode } = await supabaseAdmin
+        .from('codes')
+        .select('is_used')
+        .eq('id', codeId)
+        .single()
+
+      if (existingCode?.is_used) {
+        return NextResponse.json(
+          { error: 'Tento kód již byl použit.' },
+          { status: 409 }
+        )
+      }
       return NextResponse.json(
         { error: 'Neplatný kód.' },
         { status: 404 }
       )
     }
 
-    if (code.is_used) {
-      return NextResponse.json(
-        { error: 'Tento kód již byl použit.' },
-        { status: 409 }
-      )
-    }
-
-    const { error: updateError } = await supabaseAdmin
-      .from('codes')
+    // Mark the seat as occupied
+    await supabaseAdmin
+      .from('seats')
       .update({
-        is_used: true,
-        used_at: new Date().toISOString(),
+        is_occupied: true,
+        occupied_at: new Date().toISOString(),
+        code_id: codeId,
       })
-      .eq('id', codeId)
-
-    if (updateError) {
-      console.error('[reveal-prize] Update code error:', updateError)
-      return NextResponse.json(
-        { error: 'Nepodařilo se aktualizovat kód.' },
-        { status: 500 }
-      )
-    }
+      .eq('seat_label', seatLabel)
 
     let referralCode: string | null = null
-    if (code.registration_id) {
+    if (updatedCode.registration_id) {
       const { data: registration } = await supabaseAdmin
         .from('registrations')
         .select('referral_code')
-        .eq('id', code.registration_id)
+        .eq('id', updatedCode.registration_id)
         .maybeSingle()
       referralCode = registration?.referral_code ?? null
     }
 
     return NextResponse.json({
-      prizeType: code.prize_type,
+      prizeType: updatedCode.prize_type,
+      seatLabel,
       referralCode,
     })
   } catch (err) {

@@ -45,7 +45,7 @@ export function RegistrationForm() {
     const supabase = createClient()
     supabase
       .from('questions')
-      .select('*')
+      .select('id, question_text, options')
       .eq('is_active', true)
       .limit(1)
       .single()
@@ -185,6 +185,9 @@ export function RegistrationForm() {
             <p className="text-gray-500">
               Vyplňte formulář a zapojte se do soutěže o skvělé ceny
             </p>
+            <p className="text-gray-400 text-xs mt-1">
+              Soutěž s hrdou podporou Kauflandu
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
@@ -263,10 +266,10 @@ export function RegistrationForm() {
                 <p>Soutěž momentálně neprobíhá. Zkuste to prosím později.</p>
               </div>
             ) : question ? (
-              <div className="bg-[#F4F6F8] rounded-xl p-5">
-                <Label className="text-base font-semibold mb-3 block">
+              <fieldset className="bg-[#F4F6F8] rounded-xl p-5">
+                <legend className="text-base font-semibold mb-3 block">
                   {question.question_text} *
-                </Label>
+                </legend>
                 <div className="space-y-2">
                   {question.options.map((option: string, idx: number) => (
                     <label
@@ -290,7 +293,7 @@ export function RegistrationForm() {
                   ))}
                 </div>
                 <FieldError message={errors.selected_answer} />
-              </div>
+              </fieldset>
             ) : null}
 
             <div className="space-y-3 pt-2">

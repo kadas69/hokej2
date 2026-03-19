@@ -7,7 +7,7 @@ interface PhotoBreakProps {
   src: string
   alt: string
   heading?: string
-  subtitle?: string
+  subtitle?: React.ReactNode
 }
 
 export function PhotoBreak({ src, alt, heading, subtitle }: PhotoBreakProps) {

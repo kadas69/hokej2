@@ -67,7 +67,7 @@ export const PRIZE_LIMITS: Record<Exclude<PrizeType, 'no_prize'>, number> = {
 }
 
 export const PRIZE_CONFIG: Record<PrizeType, { label: string; color: string; icon: string }> = {
-  main_trip: { label: 'Zájezd na MS v hokeji do Švýcarska!', color: '#FFD700', icon: '🏆' },
+  main_trip: { label: 'Zájezd na hokej do Švýcarska!', color: '#FFD700', icon: '🏆' },
   prima_voucher: { label: 'Prima+ voucher na 1 měsíc zdarma!', color: '#7C3AED', icon: '🎬' },
   kaufland_voucher: { label: 'Kaufland poukázka 500 Kč!', color: '#C8102E', icon: '🛒' },
   merch: { label: 'Hokejový merch balíček!', color: '#003DA5', icon: '🧢' },

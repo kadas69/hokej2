@@ -105,8 +105,15 @@ export async function POST(request: Request) {
     }
     const normalizedPhone = cleanPhone.startsWith('+420') ? cleanPhone : `+420${cleanPhone}`
 
+    const parsedDate = new Date(birth_date)
+    if (isNaN(parsedDate.getTime())) {
+      return NextResponse.json(
+        { error: 'Neplatné datum narození.' },
+        { status: 400 }
+      )
+    }
     const age = Math.floor(
-      (Date.now() - new Date(birth_date).getTime()) / (365.25 * 24 * 60 * 60 * 1000)
+      (Date.now() - parsedDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
     )
     if (age < 18) {
       return NextResponse.json(

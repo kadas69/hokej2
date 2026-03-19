@@ -10,7 +10,7 @@ import { StadiumLight, LocationPin } from '@/components/DecorativeIcons'
 const PRIZE_DETAILS: Record<Exclude<PrizeType, 'no_prize'>, { Icon: React.ElementType; detail: string; image: string }> = {
   main_trip: {
     Icon: Trophy,
-    detail: 'Letenky + vstupenky pro 2 osoby na MS v hokeji ve Švýcarsku',
+    detail: 'Letenky + vstupenky pro 2 osoby na hokej ve Švýcarsku',
     image: '/images/prizes/prize-flight.png',
   },
   kaufland_voucher: {

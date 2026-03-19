@@ -14,7 +14,7 @@ export function Footer() {
               Za hokejem do Švýcar
             </div>
             <p className="text-white/40 text-sm max-w-xs">
-              Soutěž o zájezd na MS v hokeji 2026 do Švýcarska s Kauflandem a CNN Prima NEWS.
+              Soutěž o zájezd na hokej do Švýcarska s Kauflandem a CNN Prima NEWS.
             </p>
           </div>
 
@@ -37,7 +37,7 @@ export function Footer() {
           <p className="text-xs text-white/30 uppercase tracking-widest mb-4">Partneři</p>
           <div className="flex items-center gap-8 flex-wrap">
             <div className="flex items-center gap-3 text-white/60">
-              <Image src="/images/logos/logo-kaufland.png" alt="Kaufland" width={32} height={32} className="object-contain" />
+              <Image src="/images/logos/logo-kaufland-new.jpg" alt="Kaufland" width={36} height={36} className="object-contain rounded bg-white p-0.5" />
               <span className="text-sm font-medium">Kaufland</span>
             </div>
             <div className="flex items-center gap-3 text-white/60">

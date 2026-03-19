@@ -3,7 +3,18 @@ interface CodeEmailParams {
   code: string
 }
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 export function buildCodeEmailHtml({ firstName, code }: CodeEmailParams): string {
+  const safeFirstName = escapeHtml(firstName)
+  const safeCode = escapeHtml(code)
   return `<!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -33,7 +44,7 @@ export function buildCodeEmailHtml({ firstName, code }: CodeEmailParams): string
           <tr>
             <td style="padding:32px 24px;">
               <p style="margin:0 0 16px;color:#1A1A2E;font-size:16px;line-height:1.5;">
-                Ahoj <strong>${firstName}</strong>,
+                Ahoj <strong>${safeFirstName}</strong>,
               </p>
               <p style="margin:0 0 8px;color:#1A1A2E;font-size:16px;line-height:1.5;">
                 děkujeme za registraci do soutěže! Správně jsi odpověděl/a na soutěžní otázku
@@ -48,7 +59,7 @@ export function buildCodeEmailHtml({ firstName, code }: CodeEmailParams): string
                 <tr>
                   <td align="center" style="padding:24px;background-color:#F3F4F6;border-radius:8px;border:2px dashed #010D5D;">
                     <span style="font-size:32px;font-weight:800;letter-spacing:4px;color:#010D5D;">
-                      ${code}
+                      ${safeCode}
                     </span>
                   </td>
                 </tr>
@@ -64,7 +75,7 @@ export function buildCodeEmailHtml({ firstName, code }: CodeEmailParams): string
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="padding:4px 0;color:#1A1A2E;font-size:14px;line-height:1.6;">
-                          🏆 Zájezd na MS v hokeji do Švýcarska
+                          🏆 Zájezd na hokej do Švýcarska
                         </td>
                       </tr>
                       <tr>

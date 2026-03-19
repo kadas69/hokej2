@@ -7,9 +7,16 @@ import type { PrizeType } from '@/lib/types'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
+const VALID_PRIZE_TYPES: PrizeType[] = ['main_trip', 'prima_voucher', 'kaufland_voucher', 'merch', 'no_prize']
+
+function isValidPrizeType(value: string | null): value is PrizeType {
+  return value !== null && VALID_PRIZE_TYPES.includes(value as PrizeType)
+}
+
 function VyhraContent() {
   const searchParams = useSearchParams()
-  const prize = searchParams.get('prize') as PrizeType | null
+  const prizeParam = searchParams.get('prize')
+  const prize = isValidPrizeType(prizeParam) ? prizeParam : null
   const seat = searchParams.get('seat')
   const referralCode = searchParams.get('referralCode')
 

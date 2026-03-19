@@ -62,7 +62,7 @@ export function LogoBar() {
         </p>
         <div className="flex items-center gap-5">
           <Logo
-            src="/images/logos/logo-kaufland.png"
+            src="/images/logos/logo-kaufland-nove.jpg"
             alt="Kaufland"
             width={44}
             height={22}

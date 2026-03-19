@@ -8,13 +8,13 @@ const geistSans = Geist({
 })
 
 export const metadata: Metadata = {
-  title: "Za hokejem do Švýcar | Kaufland soutěž MS 2026",
+  title: "Za hokejem do Švýcar | Kaufland soutěž",
   description:
-    "Nastupte na palubu a leťte na MS v hokeji! Soutěžte s Kauflandem o zájezd do Švýcarska a další ceny.",
+    "Nastupte na palubu a leťte na hokej! Soutěžte s Kauflandem o zájezd do Švýcarska a další ceny.",
   openGraph: {
-    title: "Za hokejem do Švýcar | Kaufland soutěž MS 2026",
+    title: "Za hokejem do Švýcar | Kaufland soutěž",
     description:
-      "Nastupte na palubu a leťte na MS v hokeji! Soutěžte s Kauflandem o zájezd do Švýcarska.",
+      "Nastupte na palubu a leťte na hokej! Soutěžte s Kauflandem o zájezd do Švýcarska.",
     url: "https://www.zahokejemdosvycar.cz",
     siteName: "Za hokejem do Švýcar",
     locale: "cs_CZ",

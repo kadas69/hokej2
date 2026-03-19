@@ -34,7 +34,7 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
       const res = await fetch('/api/reveal-prize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ codeId }),
+        body: JSON.stringify({ codeId, seatLabel: selected }),
       })
 
       const data = await res.json()
@@ -76,17 +76,17 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
             style={{
               width: 200,
               height: 60,
-              background: 'linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
-              borderLeft: '1px solid rgba(255,255,255,0.15)',
-              borderRight: '1px solid rgba(255,255,255,0.15)',
-              borderTop: '1px solid rgba(255,255,255,0.2)',
+              background: 'linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.10) 100%)',
+              borderLeft: '1px solid rgba(255,255,255,0.25)',
+              borderRight: '1px solid rgba(255,255,255,0.25)',
+              borderTop: '1px solid rgba(255,255,255,0.35)',
               borderRadius: '50% 50% 0 0',
             }}
           >
             {/* Cockpit windows */}
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-              <div className="w-4 h-2 rounded-full bg-white/10 border border-white/15" />
-              <div className="w-4 h-2 rounded-full bg-white/10 border border-white/15" />
+              <div className="w-4 h-2 rounded-full bg-white/15 border border-white/25" />
+              <div className="w-4 h-2 rounded-full bg-white/15 border border-white/25" />
             </div>
           </div>
 
@@ -95,9 +95,9 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
             className="relative mx-auto overflow-visible"
             style={{
               width: 200,
-              background: 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.05) 100%)',
-              borderLeft: '1px solid rgba(255,255,255,0.15)',
-              borderRight: '1px solid rgba(255,255,255,0.15)',
+              background: 'linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.10) 100%)',
+              borderLeft: '1px solid rgba(255,255,255,0.28)',
+              borderRight: '1px solid rgba(255,255,255,0.28)',
             }}
           >
             {/* Window dots along the sides */}
@@ -105,7 +105,7 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
               <div key={`windows-${row}`}>
                 {/* Left window */}
                 <div
-                  className="absolute w-1.5 h-2.5 rounded-full bg-white/5 border border-white/8"
+                  className="absolute w-1.5 h-2.5 rounded-full bg-white/12 border border-white/18"
                   style={{
                     left: -1,
                     top: idx * 38 + 14,
@@ -114,7 +114,7 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
                 />
                 {/* Right window */}
                 <div
-                  className="absolute w-1.5 h-2.5 rounded-full bg-white/5 border border-white/8"
+                  className="absolute w-1.5 h-2.5 rounded-full bg-white/12 border border-white/18"
                   style={{
                     right: -1,
                     top: idx * 38 + 14,
@@ -133,10 +133,10 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
                 right: '100%',
                 width: 140,
                 height: (WING_END_ROW - WING_START_ROW + 1) * 38 - 40,
-                background: 'linear-gradient(270deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 40%, rgba(255,255,255,0.02) 100%)',
-                borderTop: '1px solid rgba(255,255,255,0.2)',
-                borderBottom: '1px solid rgba(255,255,255,0.15)',
-                borderLeft: '1px solid rgba(255,255,255,0.08)',
+                background: 'linear-gradient(270deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.12) 40%, rgba(255,255,255,0.05) 100%)',
+                borderTop: '1px solid rgba(255,255,255,0.35)',
+                borderBottom: '1px solid rgba(255,255,255,0.25)',
+                borderLeft: '1px solid rgba(255,255,255,0.15)',
                 clipPath: 'polygon(100% 0%, 100% 100%, 0% 80%, 0% 30%)',
                 transformOrigin: 'right center',
               }}
@@ -149,7 +149,7 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
                   left: 0,
                   right: 0,
                   height: 2,
-                  background: 'linear-gradient(270deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)',
+                  background: 'linear-gradient(270deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.12) 100%)',
                 }}
               />
               {/* Engine */}
@@ -161,8 +161,8 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
                   width: 16,
                   height: 24,
                   borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(255,255,255,0.15)',
+                  background: 'rgba(255,255,255,0.16)',
+                  border: '1px solid rgba(255,255,255,0.28)',
                 }}
               />
             </div>
@@ -175,10 +175,10 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
                 left: '100%',
                 width: 140,
                 height: (WING_END_ROW - WING_START_ROW + 1) * 38 - 40,
-                background: 'linear-gradient(90deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 40%, rgba(255,255,255,0.02) 100%)',
-                borderTop: '1px solid rgba(255,255,255,0.2)',
-                borderBottom: '1px solid rgba(255,255,255,0.15)',
-                borderRight: '1px solid rgba(255,255,255,0.08)',
+                background: 'linear-gradient(90deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.12) 40%, rgba(255,255,255,0.05) 100%)',
+                borderTop: '1px solid rgba(255,255,255,0.35)',
+                borderBottom: '1px solid rgba(255,255,255,0.25)',
+                borderRight: '1px solid rgba(255,255,255,0.15)',
                 clipPath: 'polygon(0% 0%, 0% 100%, 100% 80%, 100% 30%)',
                 transformOrigin: 'left center',
               }}
@@ -191,7 +191,7 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
                   left: 0,
                   right: 0,
                   height: 2,
-                  background: 'linear-gradient(90deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)',
+                  background: 'linear-gradient(90deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.12) 100%)',
                 }}
               />
               {/* Engine */}
@@ -203,8 +203,8 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
                   width: 16,
                   height: 24,
                   borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(255,255,255,0.15)',
+                  background: 'rgba(255,255,255,0.16)',
+                  border: '1px solid rgba(255,255,255,0.28)',
                 }}
               />
             </div>
@@ -267,7 +267,7 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
                       right: 8,
                       fontSize: '9px',
                       fontWeight: 500,
-                      color: 'rgba(255, 255, 255, 0.2)',
+                      color: 'rgba(255, 255, 255, 0.35)',
                     }}
                   >
                     {row}
@@ -283,10 +283,10 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
             style={{
               width: 200,
               height: 50,
-              background: 'linear-gradient(0deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.04) 100%)',
-              borderLeft: '1px solid rgba(255,255,255,0.15)',
-              borderRight: '1px solid rgba(255,255,255,0.15)',
-              borderBottom: '1px solid rgba(255,255,255,0.12)',
+              background: 'linear-gradient(0deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.08) 100%)',
+              borderLeft: '1px solid rgba(255,255,255,0.28)',
+              borderRight: '1px solid rgba(255,255,255,0.28)',
+              borderBottom: '1px solid rgba(255,255,255,0.22)',
               borderRadius: '0 0 40% 40%',
             }}
           />
@@ -297,10 +297,10 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
               style={{
                 width: 8,
                 height: 30,
-                background: 'linear-gradient(0deg, rgba(209,10,16,0.4) 0%, rgba(209,10,16,0.15) 100%)',
-                borderLeft: '1px solid rgba(255,255,255,0.12)',
-                borderRight: '1px solid rgba(255,255,255,0.12)',
-                borderBottom: '1px solid rgba(255,255,255,0.1)',
+                background: 'linear-gradient(0deg, rgba(209,10,16,0.6) 0%, rgba(209,10,16,0.3) 100%)',
+                borderLeft: '1px solid rgba(255,255,255,0.22)',
+                borderRight: '1px solid rgba(255,255,255,0.22)',
+                borderBottom: '1px solid rgba(255,255,255,0.18)',
                 borderRadius: '0 0 2px 2px',
               }}
             />
@@ -312,9 +312,9 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
               style={{
                 width: 120,
                 height: 16,
-                background: 'linear-gradient(0deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)',
-                borderTop: '1px solid rgba(255,255,255,0.12)',
-                borderBottom: '1px solid rgba(255,255,255,0.06)',
+                background: 'linear-gradient(0deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.08) 100%)',
+                borderTop: '1px solid rgba(255,255,255,0.22)',
+                borderBottom: '1px solid rgba(255,255,255,0.14)',
                 clipPath: 'polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%)',
               }}
             />
@@ -328,8 +328,8 @@ export function SeatMap({ codeId, onSeatClaimed }: SeatMapProps) {
           <div
             className="w-4 h-4 rounded-md"
             style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.08)',
-              border: '1.5px solid rgba(255, 255, 255, 0.15)',
+              backgroundColor: 'rgba(255, 255, 255, 0.12)',
+              border: '1.5px solid rgba(255, 255, 255, 0.22)',
             }}
           />
           Volné

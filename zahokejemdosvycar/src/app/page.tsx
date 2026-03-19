@@ -16,10 +16,10 @@ export default function HomePage() {
         <HowItWorksSection />
         <PrizesSection />
         <PhotoBreak
-          src="/images/stadion_venku.png"
+          src="/images/venkufinal.png"
           alt="Hokejový stadion ve švýcarských horách"
           heading="Zažijte hokej ve Švýcarsku"
-          subtitle="MS v hokeji 2026 — Curych · Bern · Fribourg"
+          subtitle={undefined}
         />
         <RegistrationForm />
       </main>

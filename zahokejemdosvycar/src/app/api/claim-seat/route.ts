@@ -12,47 +12,8 @@ export async function POST(request: Request) {
       )
     }
 
+    // Atomic update: only mark code as used if not already used
     const { data: code, error: codeError } = await supabaseAdmin
-      .from('codes')
-      .select('id, prize_type, is_used, registration_id')
-      .eq('id', codeId)
-      .single()
-
-    if (codeError || !code) {
-      return NextResponse.json(
-        { error: 'Neplatný kód.' },
-        { status: 404 }
-      )
-    }
-
-    if (code.is_used) {
-      return NextResponse.json(
-        { error: 'Tento kód již byl použit.' },
-        { status: 409 }
-      )
-    }
-
-    const { data: seat, error: seatError } = await supabaseAdmin
-      .from('seats')
-      .select('id, is_occupied')
-      .eq('seat_label', seatLabel)
-      .single()
-
-    if (seatError || !seat) {
-      return NextResponse.json(
-        { error: 'Sedadlo nebylo nalezeno.' },
-        { status: 404 }
-      )
-    }
-
-    if (seat.is_occupied) {
-      return NextResponse.json(
-        { error: 'Toto sedadlo je již obsazené.' },
-        { status: 409 }
-      )
-    }
-
-    const { error: updateCodeError } = await supabaseAdmin
       .from('codes')
       .update({
         is_used: true,
@@ -60,16 +21,31 @@ export async function POST(request: Request) {
         used_at: new Date().toISOString(),
       })
       .eq('id', codeId)
+      .eq('is_used', false)
+      .select('id, prize_type, registration_id')
+      .single()
 
-    if (updateCodeError) {
-      console.error('[claim-seat] Update code error:', updateCodeError)
+    if (codeError || !code) {
+      const { data: existingCode } = await supabaseAdmin
+        .from('codes')
+        .select('is_used')
+        .eq('id', codeId)
+        .single()
+
+      if (existingCode?.is_used) {
+        return NextResponse.json(
+          { error: 'Tento kód již byl použit.' },
+          { status: 409 }
+        )
+      }
       return NextResponse.json(
-        { error: 'Nepodařilo se aktualizovat kód.' },
-        { status: 500 }
+        { error: 'Neplatný kód.' },
+        { status: 404 }
       )
     }
 
-    const { error: updateSeatError } = await supabaseAdmin
+    // Atomic seat claim: only occupy if not already occupied
+    const { data: seat, error: seatError } = await supabaseAdmin
       .from('seats')
       .update({
         is_occupied: true,
@@ -77,12 +53,20 @@ export async function POST(request: Request) {
         code_id: codeId,
       })
       .eq('seat_label', seatLabel)
+      .eq('is_occupied', false)
+      .select('id')
+      .single()
 
-    if (updateSeatError) {
-      console.error('[claim-seat] Update seat error:', updateSeatError)
+    if (seatError || !seat) {
+      // Rollback the code update
+      await supabaseAdmin
+        .from('codes')
+        .update({ is_used: false, seat_number: null, used_at: null })
+        .eq('id', codeId)
+
       return NextResponse.json(
-        { error: 'Nepodařilo se obsadit sedadlo.' },
-        { status: 500 }
+        { error: 'Toto sedadlo je již obsazené.' },
+        { status: 409 }
       )
     }
 
