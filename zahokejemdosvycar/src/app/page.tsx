@@ -6,6 +6,7 @@ import { PageBackground } from '@/components/PageBackground'
 import { PrizesSection } from '@/components/PrizesSection'
 import { HowItWorksSection } from '@/components/HowItWorksSection'
 import { PhotoBreak } from '@/components/StadiumSection'
+import { WinnersSection } from '@/components/WinnersSection'
 
 export default function HomePage() {
   return (
@@ -22,6 +23,7 @@ export default function HomePage() {
           subtitle={undefined}
         />
         <RegistrationForm />
+        <WinnersSection />
       </main>
       <Footer />
     </>

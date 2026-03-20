@@ -14,8 +14,8 @@ import {
   LogIn,
   ShieldCheck,
 } from 'lucide-react'
-import type { Question, Registration, Code } from '@/lib/types'
-import { PRIZE_LIMITS } from '@/lib/types'
+import type { Question, Registration, Code, Winner } from '@/lib/types'
+import { PRIZE_LIMITS, WINNERS_TOTAL_SLOTS } from '@/lib/types'
 
 export default function AdminPage() {
   const [password, setPassword] = useState('')
@@ -75,7 +75,7 @@ export default function AdminPage() {
 }
 
 function AdminDashboard({ password, onAuthError }: { password: string; onAuthError: () => void }) {
-  const [tab, setTab] = useState<'questions' | 'codes' | 'registrations'>('questions')
+  const [tab, setTab] = useState<'questions' | 'codes' | 'registrations' | 'winners'>('questions')
 
   const authedFetch = useCallback(async (url: string, options?: RequestInit) => {
     const authHeaders = {
@@ -97,6 +97,7 @@ function AdminDashboard({ password, onAuthError }: { password: string; onAuthErr
     { id: 'questions' as const, label: 'Otázky' },
     { id: 'codes' as const, label: 'Kódy' },
     { id: 'registrations' as const, label: 'Registrace' },
+    { id: 'winners' as const, label: 'Výherci' },
   ]
 
   return (
@@ -130,6 +131,7 @@ function AdminDashboard({ password, onAuthError }: { password: string; onAuthErr
         {tab === 'questions' && <QuestionsTab authedFetch={authedFetch} />}
         {tab === 'codes' && <CodesTab authedFetch={authedFetch} />}
         {tab === 'registrations' && <RegistrationsTab authedFetch={authedFetch} />}
+        {tab === 'winners' && <WinnersTab authedFetch={authedFetch} />}
       </div>
     </div>
   )
@@ -543,6 +545,187 @@ function RegistrationsTab({ authedFetch }: { authedFetch: AuthedFetch }) {
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  )
+}
+
+function WinnersTab({ authedFetch }: { authedFetch: AuthedFetch }) {
+  const [winners, setWinners] = useState<Winner[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showForm, setShowForm] = useState(false)
+  const [formSlot, setFormSlot] = useState(1)
+  const [formFirstName, setFormFirstName] = useState('')
+  const [formLastName, setFormLastName] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  const load = useCallback(async () => {
+    setLoading(true)
+    try {
+      const res = await authedFetch('/api/admin/winners')
+      const data = await res.json()
+      setWinners(data.winners || [])
+    } catch { /* auth redirect */ }
+    setLoading(false)
+  }, [authedFetch])
+
+  useEffect(() => { load() }, [load])
+
+  const occupiedSlots = new Set(winners.map((w) => w.slot_number))
+  const availableSlots = Array.from({ length: WINNERS_TOTAL_SLOTS }, (_, i) => i + 1).filter(
+    (s) => !occupiedSlots.has(s)
+  )
+
+  // Auto-select first available slot when form opens
+  useEffect(() => {
+    if (showForm) {
+      const occupied = new Set(winners.map((w) => w.slot_number))
+      const first = Array.from({ length: WINNERS_TOTAL_SLOTS }, (_, i) => i + 1).find((s) => !occupied.has(s))
+      if (first !== undefined) setFormSlot(first)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showForm])
+
+  async function handleCreate(e: React.FormEvent) {
+    e.preventDefault()
+    setSaving(true)
+    setError('')
+    try {
+      const res = await authedFetch('/api/admin/winners', {
+        method: 'POST',
+        body: JSON.stringify({
+          slot_number: formSlot,
+          first_name: formFirstName,
+          last_name: formLastName,
+        }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        setError(data.error || 'Chyba při vytváření.')
+        setSaving(false)
+        return
+      }
+      setShowForm(false)
+      setFormFirstName('')
+      setFormLastName('')
+      load()
+    } catch { /* auth redirect */ }
+    setSaving(false)
+  }
+
+  async function deleteWinner(id: string) {
+    if (!confirm('Opravdu odebrat výherce?')) return
+    await authedFetch(`/api/admin/winners?id=${id}`, { method: 'DELETE' })
+    load()
+  }
+
+  if (loading) return <LoadingState />
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold text-text-primary">
+          Výherní listina ({winners.length} / {WINNERS_TOTAL_SLOTS})
+        </h2>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={load} className="cursor-pointer">
+            <RefreshCw className="w-4 h-4" />
+          </Button>
+          {availableSlots.length > 0 && (
+            <Button size="sm" onClick={() => setShowForm(!showForm)} className="bg-hockey-blue hover:bg-hockey-blue/90 text-white cursor-pointer">
+              <Plus className="w-4 h-4 mr-1" /> Přidat výherce
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Progress overview */}
+      <div className="bg-white rounded-xl p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-medium text-text-secondary">Zveřejněno</span>
+          <span className="text-sm font-bold text-text-primary">{winners.length} / {WINNERS_TOTAL_SLOTS}</span>
+        </div>
+        <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+          <div
+            className="h-full rounded-full bg-hockey-blue transition-all duration-500"
+            style={{ width: `${(winners.length / WINNERS_TOTAL_SLOTS) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {showForm && (
+        <form onSubmit={handleCreate} className="bg-white rounded-xl p-6 shadow-sm space-y-4">
+          <h3 className="font-semibold text-text-primary">Nový výherce</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <Label>Slot</Label>
+              <select
+                value={formSlot}
+                onChange={(e) => setFormSlot(Number(e.target.value))}
+                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+              >
+                {availableSlots.map((s) => (
+                  <option key={s} value={s}>Slot #{s}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <Label>Jméno</Label>
+              <Input value={formFirstName} onChange={(e) => setFormFirstName(e.target.value)} className="mt-1" placeholder="Jan" />
+            </div>
+            <div>
+              <Label>Příjmení</Label>
+              <Input value={formLastName} onChange={(e) => setFormLastName(e.target.value)} className="mt-1" placeholder="Novák" />
+            </div>
+          </div>
+          {error && <p className="text-destructive text-sm">{error}</p>}
+          <Button type="submit" disabled={saving || !formFirstName || !formLastName} className="bg-kaufland hover:bg-kaufland/90 text-white cursor-pointer">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+            Přidat výherce
+          </Button>
+        </form>
+      )}
+
+      {/* Slots grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {Array.from({ length: WINNERS_TOTAL_SLOTS }, (_, i) => {
+          const slotNum = i + 1
+          const winner = winners.find((w) => w.slot_number === slotNum)
+          return (
+            <div
+              key={slotNum}
+              className={`bg-white rounded-xl p-4 shadow-sm flex items-center justify-between gap-3 ${
+                winner ? 'ring-2 ring-green-400' : 'border border-dashed border-gray-200'
+              }`}
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                  winner ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'
+                }`}>
+                  {slotNum}
+                </div>
+                {winner ? (
+                  <div className="min-w-0">
+                    <p className="font-semibold text-text-primary text-sm truncate">
+                      {winner.first_name} {winner.last_name}
+                    </p>
+                    <p className="text-xs text-text-secondary">
+                      {new Date(winner.revealed_at).toLocaleDateString('cs-CZ')}
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-400">Prázdný slot</p>
+                )}
+              </div>
+              {winner && (
+                <Button variant="outline" size="sm" onClick={() => deleteWinner(winner.id)} className="cursor-pointer text-destructive shrink-0">
+                  <Trash2 className="w-3.5 h-3.5" />
+                </Button>
+              )}
+            </div>
+          )
+        })}
       </div>
     </div>
   )

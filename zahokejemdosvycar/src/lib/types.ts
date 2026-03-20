@@ -46,6 +46,17 @@ export interface Seat {
   code_id: string | null
 }
 
+export interface Winner {
+  id: string
+  slot_number: number
+  first_name: string
+  last_name: string
+  revealed_at: string
+  created_at: string
+}
+
+export const WINNERS_TOTAL_SLOTS = 16
+
 export interface RegistrationFormData {
   first_name: string
   last_name: string
